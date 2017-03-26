@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/anton/Desktop/Projects/AVR/blink/easyavr.h
+
+/home/anton/Desktop/Projects/AVR/blink/libs/mydefs.h
+
+/home/anton/Desktop/Projects/AVR/blink/libs/uart.c
+uart.h
+/home/anton/Desktop/Projects/AVR/blink/libs/uart.h
+
+/home/anton/Desktop/Projects/AVR/blink/libs/uart.h
+avr/interrupt.h
+-
+avr/io.h
+-
+mydefs.h
+/home/anton/Desktop/Projects/AVR/blink/libs/mydefs.h
+util/delay.h
+-
+
+/home/anton/Desktop/Projects/AVR/blink/main.c
+avr/io.h
+-
+util/delay.h
+-
+string.h
+-
+stdlib.h
+-
+easyavr.h
+/home/anton/Desktop/Projects/AVR/blink/easyavr.h
+libs/uart.h
+/home/anton/Desktop/Projects/AVR/blink/libs/uart.h
+
