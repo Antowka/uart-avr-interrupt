@@ -1,1 +1,1 @@
-avr-gcc  -Os -mmcu=atmega328p -DF_CPU=16000000UL -std=gnu99 -Wl,--gc-sections -g   CMakeFiles/blink.dir/main.c.obj CMakeFiles/blink.dir/libs/uart.c.obj  -o ../bin/blink 
+avr-gcc  -Os -mmcu=atmega328p -DF_CPU=16000000UL -std=gnu99 -Wl,--gc-sections -g   CMakeFiles/blink.dir/main.c.obj CMakeFiles/blink.dir/libs/uart.c.obj CMakeFiles/blink.dir/libs/sms.c.obj CMakeFiles/blink.dir/libs/debug.c.obj  -o ../bin/blink 

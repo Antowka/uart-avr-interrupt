@@ -19,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 #============================================================================================
 
-SET(SOURCE_FILES main.c easyavr.h libs/uart.c libs/uart.h)
+SET(SOURCE_FILES main.c easyavr.h libs/uart.c libs/uart.h libs/sms.c libs/sms.h libs/debug.h libs/debug.c)
 
 #============================================================================================
 

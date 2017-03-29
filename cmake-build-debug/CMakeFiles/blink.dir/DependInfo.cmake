@@ -4,6 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
+  "/home/anton/Desktop/Projects/AVR/blink/libs/debug.c" "/home/anton/Desktop/Projects/AVR/blink/cmake-build-debug/CMakeFiles/blink.dir/libs/debug.c.obj"
+  "/home/anton/Desktop/Projects/AVR/blink/libs/sms.c" "/home/anton/Desktop/Projects/AVR/blink/cmake-build-debug/CMakeFiles/blink.dir/libs/sms.c.obj"
   "/home/anton/Desktop/Projects/AVR/blink/libs/uart.c" "/home/anton/Desktop/Projects/AVR/blink/cmake-build-debug/CMakeFiles/blink.dir/libs/uart.c.obj"
   "/home/anton/Desktop/Projects/AVR/blink/main.c" "/home/anton/Desktop/Projects/AVR/blink/cmake-build-debug/CMakeFiles/blink.dir/main.c.obj"
   )

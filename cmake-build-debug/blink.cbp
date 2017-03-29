@@ -87,7 +87,16 @@
 		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/easyavr.h">
 			<Option target="blink"/>
 		</Unit>
-		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/libs/fifo.h">
+		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/libs/debug.c">
+			<Option target="blink"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/libs/debug.h">
+			<Option target="blink"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/libs/sms.c">
+			<Option target="blink"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/libs/sms.h">
 			<Option target="blink"/>
 		</Unit>
 		<Unit filename="/home/anton/Desktop/Projects/AVR/blink/libs/uart.c">

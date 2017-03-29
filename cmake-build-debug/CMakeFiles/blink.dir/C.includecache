@@ -8,9 +8,25 @@
 
 /home/anton/Desktop/Projects/AVR/blink/easyavr.h
 
+/home/anton/Desktop/Projects/AVR/blink/libs/debug.c
+uart.h
+/home/anton/Desktop/Projects/AVR/blink/libs/uart.h
+
+/home/anton/Desktop/Projects/AVR/blink/libs/debug.h
+
 /home/anton/Desktop/Projects/AVR/blink/libs/mydefs.h
 
+/home/anton/Desktop/Projects/AVR/blink/libs/sms.c
+string.h
+-
+sms.h
+/home/anton/Desktop/Projects/AVR/blink/libs/sms.h
+
+/home/anton/Desktop/Projects/AVR/blink/libs/sms.h
+
 /home/anton/Desktop/Projects/AVR/blink/libs/uart.c
+string.h
+-
 uart.h
 /home/anton/Desktop/Projects/AVR/blink/libs/uart.h
 
@@ -37,4 +53,8 @@ easyavr.h
 /home/anton/Desktop/Projects/AVR/blink/easyavr.h
 libs/uart.h
 /home/anton/Desktop/Projects/AVR/blink/libs/uart.h
+libs/sms.h
+/home/anton/Desktop/Projects/AVR/blink/libs/sms.h
+libs/debug.h
+/home/anton/Desktop/Projects/AVR/blink/libs/debug.h
 

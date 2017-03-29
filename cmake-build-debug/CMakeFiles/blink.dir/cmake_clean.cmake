@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/blink.dir/main.c.obj"
   "CMakeFiles/blink.dir/libs/uart.c.obj"
+  "CMakeFiles/blink.dir/libs/sms.c.obj"
+  "CMakeFiles/blink.dir/libs/debug.c.obj"
   "../bin/blink.pdb"
   "../bin/blink"
 )

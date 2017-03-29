@@ -1,3 +1,4 @@
+#include <string.h>
 #include "uart.h"
 
 
@@ -48,7 +49,6 @@ u8 ugetchar0(void) {
 
 ISR(USART0_RX_vect) {
     u8 i = rx_in;
-
     ROLLOVER(i, RX0_SIZE);
     if (i == rx_out) {            // buffer overflow
         URX0_IEN = 0;            // disable RX interrupt
@@ -104,4 +104,9 @@ void initUART() {
     init_uart0();
     sei();
     delay_1ms(300);
+}
+
+void cleanBuffer(void) {
+    memset(rx_buff, 0, sizeof rx_buff);
+    rx_in = 0;
 }

@@ -123,6 +123,60 @@ blink/fast:
 	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/build
 .PHONY : blink/fast
 
+libs/debug.obj: libs/debug.c.obj
+
+.PHONY : libs/debug.obj
+
+# target to build an object file
+libs/debug.c.obj:
+	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/libs/debug.c.obj
+.PHONY : libs/debug.c.obj
+
+libs/debug.i: libs/debug.c.i
+
+.PHONY : libs/debug.i
+
+# target to preprocess a source file
+libs/debug.c.i:
+	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/libs/debug.c.i
+.PHONY : libs/debug.c.i
+
+libs/debug.s: libs/debug.c.s
+
+.PHONY : libs/debug.s
+
+# target to generate assembly for a file
+libs/debug.c.s:
+	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/libs/debug.c.s
+.PHONY : libs/debug.c.s
+
+libs/sms.obj: libs/sms.c.obj
+
+.PHONY : libs/sms.obj
+
+# target to build an object file
+libs/sms.c.obj:
+	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/libs/sms.c.obj
+.PHONY : libs/sms.c.obj
+
+libs/sms.i: libs/sms.c.i
+
+.PHONY : libs/sms.i
+
+# target to preprocess a source file
+libs/sms.c.i:
+	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/libs/sms.c.i
+.PHONY : libs/sms.c.i
+
+libs/sms.s: libs/sms.c.s
+
+.PHONY : libs/sms.s
+
+# target to generate assembly for a file
+libs/sms.c.s:
+	$(MAKE) -f CMakeFiles/blink.dir/build.make CMakeFiles/blink.dir/libs/sms.c.s
+.PHONY : libs/sms.c.s
+
 libs/uart.obj: libs/uart.c.obj
 
 .PHONY : libs/uart.obj
@@ -186,6 +240,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... blink"
+	@echo "... libs/debug.obj"
+	@echo "... libs/debug.i"
+	@echo "... libs/debug.s"
+	@echo "... libs/sms.obj"
+	@echo "... libs/sms.i"
+	@echo "... libs/sms.s"
 	@echo "... libs/uart.obj"
 	@echo "... libs/uart.i"
 	@echo "... libs/uart.s"
