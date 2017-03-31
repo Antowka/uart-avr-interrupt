@@ -3,7 +3,7 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include "mydefs.h"
+#include "../system/mydefs.h"
 
 
 #define BAUD     9600

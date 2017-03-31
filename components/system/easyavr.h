@@ -46,5 +46,7 @@
 //  Example for PD2: CHECK_PIN(PIND, 2)
 #define CHECK_PIN(pinreg,pin) (((pinreg) & (1 << (pin))) != 0)
 
+void initEasyAvr(void);
+void blink(void);
 
 #endif

@@ -3,7 +3,9 @@
 //
 
 #include <string.h>
+#include <stdio.h>
 #include "sms.h"
+#include "../../uart/uart.h"
 
 static char sms_buff[BUFF_SIZE];
 static char *buffPointer = (char *) &sms_buff;
@@ -31,4 +33,25 @@ char* cleanSmsText(char *message) {
     return sms_buff;
 }
 
+/**
+ * Send SMS
+ *
+ * @param phone
+ * @param text
+ */
+void sendSms(char *phone, char *text) {
+
+    char phoneCommand[25];
+    char smsText[64];
+    sprintf(phoneCommand, "AT+CMGS=%s\r\n", phone);
+    sprintf(smsText, "%s\032", text);
+
+    uputs0("AT+CMGF=1\r\n");
+    _delay_ms(1000);
+    uputs0("AT+CSCS=UCS2\r\n");
+    _delay_ms(1000);
+    uputs0(phoneCommand);
+    _delay_ms(1000);
+    uputs0(smsText);
+}
 

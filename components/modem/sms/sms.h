@@ -9,5 +9,6 @@
 
 int isSmsCommand(char *message);
 char* cleanSmsText(char *message);
+void sendSms(char *phone, char *text);
 
 #endif //BLINK_SMS_H

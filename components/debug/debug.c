@@ -1,4 +1,4 @@
-#include "uart.h"
+#include "../uart/uart.h"
 
 
 void printString(char* message) {
