@@ -1,6 +1,7 @@
 #ifndef _mydefs_h_
 #define _mydefs_h_
 
+#define COUNTER_NO_BLOCK_DELAY 5000000
 
 //			Easier type writing:
 
