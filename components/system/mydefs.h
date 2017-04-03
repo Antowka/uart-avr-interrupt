@@ -2,6 +2,7 @@
 #define _mydefs_h_
 
 #define COUNTER_NO_BLOCK_DELAY 5000000
+#define COUNTER_NO_BLOCK_DELAY_APRS 50000000
 #define LED_PIN 5
 
 //			Easier type writing:

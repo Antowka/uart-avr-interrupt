@@ -7,9 +7,11 @@
 #include "../uart/uart.h"
 #include "../system/easyavr.h"
 #include "sms/sms.h"
+#include "gprs/gprs.h"
 
 
 long counter = COUNTER_NO_BLOCK_DELAY;
+long aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
 char buff[RX0_SIZE] = "";
 char *buffLink = (char *) &buff;
 int buffPointer = 0;
@@ -29,6 +31,8 @@ void initModem(void) {
 
     uputs0("AT+CMGF=1\r\n");
     delay_1ms(500);
+
+    initGPRS();
 }
 
 /**
@@ -47,6 +51,20 @@ void pingModem(void) {
         counter = COUNTER_NO_BLOCK_DELAY;
     }
     counter--;
+}
+
+/**
+ * Send APRS DATA
+ */
+void sendAprs(void) {
+
+    if (aprsCounter <= 0) {
+
+        sendDataToAprs();
+        blink();
+        aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
+    }
+    aprsCounter--;
 }
 
 /**
@@ -93,6 +111,7 @@ void cleanBuff(void) {
 void modemLoop(void) {
 
     pingModem();
+    sendAprs();
 
     if (!ukbhit0()) {
         return;
