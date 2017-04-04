@@ -27,10 +27,10 @@ void initModem(void) {
     delay_1ms(500);
 
     uputs0("AT+GPS=1\r\n");
-    delay_1ms(500);
+    delay_1ms(1000);
 
     uputs0("AT+CMGF=1\r\n");
-    delay_1ms(500);
+    delay_1ms(1000);
 
     initGPRS();
 }
