@@ -7,5 +7,7 @@
 
 void initModem(void);
 void modemLoop(void);
+void enableTimerIrq(void);
+void disableTimerIrq(void);
 
 #endif //BLINK_MODEM_H

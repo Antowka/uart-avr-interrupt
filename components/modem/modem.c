@@ -10,16 +10,33 @@
 #include "gprs/gprs.h"
 
 
-long counter = COUNTER_NO_BLOCK_DELAY;
 long aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
 char buff[RX0_SIZE] = "";
 char *buffLink = (char *) &buff;
 int buffPointer = 0;
 
+void initTimerIrq(void) {
+    cli(); //Disable all Interrupts
+    TCCR1B = (1 << CS12) | (0 << CS11) | (1 << CS10); //CPU_SPEED/1024
+    TIMSK1 |= (1 << TOIE1);
+    TCNT1 = 0;
+    sei(); //Enable all Interrupts
+}
+
+void enableTimerIrq(void) {
+    TIMSK1 |= (1 << TOIE1);
+}
+
+void disableTimerIrq(void) {
+    TIMSK1 |= (0 << TOIE1);
+}
+
 /**
  * Send AT command for check connection and sync speed
  */
 void initModem(void) {
+
+    initTimerIrq();
 
     initUART();
 
@@ -39,18 +56,8 @@ void initModem(void) {
  * Send AT command for check connect modem
  */
 void pingModem(void) {
-
-    if (counter <= 0) {
-
-        for (int i = 2; i > 0; i--) {
-            uputs0("AT\r\n");
-            _delay_ms(300);
-        }
-
-        blink();
-        counter = COUNTER_NO_BLOCK_DELAY;
-    }
-    counter--;
+    uputs0("AT\r\n");
+    _delay_ms(500);
 }
 
 /**
@@ -59,9 +66,7 @@ void pingModem(void) {
 void sendAprs(void) {
 
     if (aprsCounter <= 0) {
-
         sendDataToAprs();
-        blink();
         aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
     }
     aprsCounter--;
@@ -110,9 +115,6 @@ void cleanBuff(void) {
  */
 void modemLoop(void) {
 
-    pingModem();
-    sendAprs();
-
     if (!ukbhit0()) {
         return;
     }
@@ -136,4 +138,13 @@ void modemLoop(void) {
             messageProcessor();
         }
     }
+}
+
+/**
+ * Handler for timer's interrupts
+ */
+ISR(TIMER1_OVF_vect) {
+    pingModem();
+    sendAprs();
+    blink();
 }

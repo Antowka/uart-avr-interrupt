@@ -3,8 +3,12 @@
 //
 
 #include "../../uart/uart.h"
+#include "../modem.h"
 
 void initGPRS(void) {
+
+    disableTimerIrq();
+
     uputs0("AT+CREG?\r\n");                                 //Query network registration
     _delay_ms(2000);
 
@@ -13,9 +17,13 @@ void initGPRS(void) {
 
     uputs0("AT+CGDCONT=1,\"IP\",\"internet.mts.ru\"\r\n");  //setting PDP parameter
     _delay_ms(5000);
+
+    enableTimerIrq();
 }
 
 void sendDataToAprs(void){
+
+    disableTimerIrq();
 
     uputs0("AT+CGACT=1,1\r\n");                             //Activate PDP, open Internet service
     _delay_ms(5000);
@@ -35,4 +43,6 @@ void sendDataToAprs(void){
 
     uputs0("AT+CIPCLOSE\r\n");                              //Close TCP
     _delay_ms(2000);
+
+    enableTimerIrq();
 }
