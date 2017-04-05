@@ -13,25 +13,18 @@ void initGPRS(void) {
 
     uputs0("AT+CGDCONT=1,\"IP\",\"internet.mts.ru\"\r\n");  //setting PDP parameter
     _delay_ms(5000);
-
-    uputs0("AT+CGACT=1,1\r\n");                             //Activate PDP, open Internet service
-    _delay_ms(5000);
 }
 
 void sendDataToAprs(void){
 
+    uputs0("AT+CGACT=1,1\r\n");                             //Activate PDP, open Internet service
+    _delay_ms(5000);
+
     uputs0("AT+CIFSR\r\n");
     _delay_ms(1000);
 
-    uputs0("AT+CIPSTART=\"TCP\",\"russia.aprs2.net\",14580\r\n"); //Establish TCP connection
+    uputs0("AT+CIPSTART=\"UDP\",\"antowka.ru\",7778\r\n"); //Establish TCP connection
     _delay_ms(10000);
-
-    uputs0("AT+CIPSEND=22");
-    uputs0("\r\n");
-    _delay_ms(5000);
-    uputs0("user UC6KFQ pass 22203");
-    uputs0("\r\n");
-    _delay_ms(6000);
 
     uputs0("AT+CIPSEND=93");
     uputs0("\r\n");
