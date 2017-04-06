@@ -7,7 +7,7 @@
 
 void initGPRS(void) {
 
-    disableTimerIrq();
+    STOP_TIMER1;
 
     uputs0("AT+CREG?\r\n");                                 //Query network registration
     _delay_ms(2000);
@@ -18,12 +18,12 @@ void initGPRS(void) {
     uputs0("AT+CGDCONT=1,\"IP\",\"internet.mts.ru\"\r\n");  //setting PDP parameter
     _delay_ms(5000);
 
-    enableTimerIrq();
+    START_TIMER1;
 }
 
 void sendDataToAprs(void){
 
-    disableTimerIrq();
+    STOP_TIMER1;
 
     uputs0("AT+CGACT=1,1\r\n");                             //Activate PDP, open Internet service
     _delay_ms(5000);
@@ -32,7 +32,7 @@ void sendDataToAprs(void){
     _delay_ms(1000);
 
     uputs0("AT+CIPSTART=\"UDP\",\"antowka.ru\",7778\r\n"); //Establish TCP connection
-    _delay_ms(10000);
+    _delay_ms(8000);
 
     uputs0("AT+CIPSEND=93");
     uputs0("\r\n");
@@ -44,5 +44,5 @@ void sendDataToAprs(void){
     uputs0("AT+CIPCLOSE\r\n");                              //Close TCP
     _delay_ms(2000);
 
-    enableTimerIrq();
+    START_TIMER1;
 }

@@ -53,5 +53,7 @@ void sendSms(char *phone, char *text) {
     uputs0(phoneCommand);
     _delay_ms(1000);
     uputs0(smsText);
+    uputs0("\r\n");
+    _delay_ms(1000);
 }
 

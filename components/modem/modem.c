@@ -8,6 +8,7 @@
 #include "../system/easyavr.h"
 #include "sms/sms.h"
 #include "gprs/gprs.h"
+#include "modem.h"
 
 
 long aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
@@ -16,19 +17,9 @@ char *buffLink = (char *) &buff;
 int buffPointer = 0;
 
 void initTimerIrq(void) {
-    cli(); //Disable all Interrupts
     TCCR1B = (1 << CS12) | (0 << CS11) | (1 << CS10); //CPU_SPEED/1024
     TIMSK1 |= (1 << TOIE1);
     TCNT1 = 0;
-    sei(); //Enable all Interrupts
-}
-
-void enableTimerIrq(void) {
-    TIMSK1 |= (1 << TOIE1);
-}
-
-void disableTimerIrq(void) {
-    TIMSK1 |= (0 << TOIE1);
 }
 
 /**
@@ -93,13 +84,14 @@ void messageProcessor() {
  * process incoming sms
  */
 void smsProcessor() {
+
     char *sms = cleanSmsText(buffLink);
 
     if (strstr(sms, "ping")) {
+        STOP_TIMER1;
         sendSms("+79875359969", "pong");
+        START_TIMER1;
     }
-
-    return;
 }
 
 /**
@@ -146,5 +138,5 @@ void modemLoop(void) {
 ISR(TIMER1_OVF_vect) {
     pingModem();
     sendAprs();
-    blink();
+    //blink();
 }

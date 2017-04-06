@@ -5,9 +5,11 @@
 #ifndef BLINK_MODEM_H
 #define BLINK_MODEM_H
 
+#define START_TIMER1 TIMSK1 |= (1 << TOIE1);
+#define STOP_TIMER1  TIMSK1 &= ~(1 << TOIE1)
+#define CLEAR_TIMER0 TCNT0 = 0
+
 void initModem(void);
 void modemLoop(void);
-void enableTimerIrq(void);
-void disableTimerIrq(void);
 
 #endif //BLINK_MODEM_H
