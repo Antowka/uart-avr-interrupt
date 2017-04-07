@@ -5,13 +5,19 @@
 #include <string.h>
 #include "../system/mydefs.h"
 #include "../uart/uart.h"
-#include "../system/easyavr.h"
 #include "sms/sms.h"
 #include "gprs/gprs.h"
 #include "modem.h"
 
-
+/**
+ * Counter for interrupt timer before send aprs
+ */
 long aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
+
+/**
+ * Flag is changing by TIMER ISR
+ */
+int timerAprsCounterFlag = 0;
 char buff[RX0_SIZE] = "";
 char *buffLink = (char *) &buff;
 int buffPointer = 0;
@@ -28,7 +34,6 @@ void initTimerIrq(void) {
 void initModem(void) {
 
     initTimerIrq();
-
     initUART();
 
     uputs0("AT\r\n");
@@ -39,8 +44,6 @@ void initModem(void) {
 
     uputs0("AT+CMGF=1\r\n");
     delay_1ms(1000);
-
-    initGPRS();
 }
 
 /**
@@ -48,7 +51,7 @@ void initModem(void) {
  */
 void pingModem(void) {
     uputs0("AT\r\n");
-    _delay_ms(500);
+    _delay_ms(1000);
 }
 
 /**
@@ -107,6 +110,12 @@ void cleanBuff(void) {
  */
 void modemLoop(void) {
 
+    if(timerAprsCounterFlag) {
+        pingModem();
+        sendAprs();
+        timerAprsCounterFlag = 0;
+    }
+
     if (!ukbhit0()) {
         return;
     }
@@ -136,7 +145,5 @@ void modemLoop(void) {
  * Handler for timer's interrupts
  */
 ISR(TIMER1_OVF_vect) {
-    pingModem();
-    sendAprs();
-    //blink();
+    timerAprsCounterFlag = 1;
 }

@@ -5,7 +5,6 @@
 #ifndef BLINK_GPRS_H
 #define BLINK_GPRS_H
 
-void initGPRS(void);
 void sendDataToAprs(void);
 
 #endif //BLINK_GPRS_H

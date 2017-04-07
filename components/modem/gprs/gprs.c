@@ -5,7 +5,8 @@
 #include "../../uart/uart.h"
 #include "../modem.h"
 
-void initGPRS(void) {
+
+void sendDataToAprs(void){
 
     STOP_TIMER1;
 
@@ -18,15 +19,8 @@ void initGPRS(void) {
     uputs0("AT+CGDCONT=1,\"IP\",\"internet.mts.ru\"\r\n");  //setting PDP parameter
     _delay_ms(5000);
 
-    START_TIMER1;
-}
-
-void sendDataToAprs(void){
-
-    STOP_TIMER1;
-
     uputs0("AT+CGACT=1,1\r\n");                             //Activate PDP, open Internet service
-    _delay_ms(5000);
+    _delay_ms(12000);
 
     uputs0("AT+CIFSR\r\n");
     _delay_ms(1000);

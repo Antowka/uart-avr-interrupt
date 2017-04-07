@@ -7,7 +7,7 @@
 
 #define START_TIMER1 TIMSK1 |= (1 << TOIE1);
 #define STOP_TIMER1  TIMSK1 &= ~(1 << TOIE1)
-#define CLEAR_TIMER0 TCNT0 = 0
+#define CLEAR_TIMER1 TCNT1 = 0
 
 void initModem(void);
 void modemLoop(void);
