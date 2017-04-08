@@ -1,7 +1,7 @@
 #ifndef _mydefs_h_
 #define _mydefs_h_
 
-#define COUNTER_NO_BLOCK_DELAY_APRS 100
+#define COUNTER_NO_BLOCK_DELAY_APRS 160
 #define LED_PIN 5
 
 //			Easier type writing:

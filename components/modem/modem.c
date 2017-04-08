@@ -8,6 +8,8 @@
 #include "sms/sms.h"
 #include "gprs/gprs.h"
 #include "modem.h"
+#include "gps/gps.h"
+#include "../system/easyavr.h"
 
 /**
  * Counter for interrupt timer before send aprs
@@ -39,9 +41,6 @@ void initModem(void) {
     uputs0("AT\r\n");
     delay_1ms(500);
 
-    uputs0("AT+GPS=1\r\n");
-    delay_1ms(1000);
-
     uputs0("AT+CMGF=1\r\n");
     delay_1ms(1000);
 }
@@ -70,18 +69,21 @@ void sendAprs(void) {
  * Wait incoming call
  */
 void messageProcessor() {
-
-    //check on incoming RING
-    if (strstr(buffLink, "RING") != NULL) {
-        uputs0("ATA\r\n");
-        return;
-    }
-
     //check response on AT command
     if (strstr(buffLink, "OK") == NULL || strstr(buffLink, "AT") == NULL) {
         return;
     }
 }
+
+/**
+ * Check is calling
+ *
+ * @return
+ */
+int isRing() {
+    return strstr(buffLink, "RING") != NULL;
+}
+
 
 /**
  * process incoming sms
@@ -135,6 +137,11 @@ void modemLoop(void) {
 
         if (isSmsCommand(buffLink)) {
             smsProcessor();
+        } else if (isRing()) {
+            uputs0("ATA\r\n");
+        } else if (isGpsCommand(buffLink)) {
+            //todo something for gps
+            blink();
         } else {
             messageProcessor();
         }

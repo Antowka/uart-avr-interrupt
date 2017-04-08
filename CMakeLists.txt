@@ -19,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 #============================================================================================
 
-SET(SOURCE_FILES main.c components/system/easyavr.h components/uart/uart.c components/uart/uart.h components/modem/sms/sms.c components/modem/sms/sms.h components/debug/debug.h components/debug/debug.c components/modem/modem.c components/modem/modem.h components/system/easyavr.c components/modem/gprs/gprs.c components/modem/gprs/gprs.h)
+SET(SOURCE_FILES main.c components/system/easyavr.h components/uart/uart.c components/uart/uart.h components/modem/sms/sms.c components/modem/sms/sms.h components/debug/debug.h components/debug/debug.c components/modem/modem.c components/modem/modem.h components/system/easyavr.c components/modem/gprs/gprs.c components/modem/gprs/gprs.h components/modem/gps/gps.c components/modem/gps/gps.h)
 
 #============================================================================================
 
