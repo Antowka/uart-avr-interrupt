@@ -71,7 +71,6 @@ ISR(USART0_UDRE_vect) {
 
 u8 utx0_ready(void) {
     u8 i = tx_in;
-
     ROLLOVER(i, TX0_SIZE);
     return vu8(tx_out) ^ i;        // 0 = busy
 }
@@ -89,7 +88,13 @@ void uputchar0(u8 c) {
 }
 
 
+void cleanTxBuffer(void) {
+    memset(tx_buff, 0, sizeof tx_buff);
+    tx_in = 0;
+}
+
 void uputs0_(u8 *s) {
+    cleanTxBuffer();
     while (*s)
         uputchar0(*s++);
 }
@@ -110,3 +115,4 @@ void cleanBuffer(void) {
     memset(rx_buff, 0, sizeof rx_buff);
     rx_in = 0;
 }
+

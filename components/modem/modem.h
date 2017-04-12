@@ -11,5 +11,6 @@
 
 void initModem(void);
 void modemLoop(void);
+void sendAprs(void);
 
 #endif //BLINK_MODEM_H

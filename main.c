@@ -13,7 +13,7 @@ int main() {
 
     initEasyAvr();
     initModem();
-    sendDataToAprs();
+    sendAprs();
     enableGpsReciver();
 
     while (1) {

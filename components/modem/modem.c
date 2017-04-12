@@ -59,7 +59,7 @@ void pingModem(void) {
 void sendAprs(void) {
 
     if (aprsCounter <= 0) {
-        sendDataToAprs();
+        sendDataToServer("APRS::UC6KFQ>APRS,TCPIP*,qAC,T2GREECE:!5619.09N/04403.24Eyop.Anton (UC6KFQ/3) 145.500Mhz/433.500Mhz");
         aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
     }
     aprsCounter--;
@@ -140,8 +140,7 @@ void modemLoop(void) {
         } else if (isRing()) {
             uputs0("ATA\r\n");
         } else if (isGpsCommand(buffLink)) {
-            //todo something for gps
-            blink();
+            processNewGPSPosition(buffLink);
         } else {
             messageProcessor();
         }
