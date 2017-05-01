@@ -6,8 +6,10 @@
 #include "../system/mydefs.h"
 
 
-#define BAUD     9600
-#define F_CPU    16000000
+#define BAUD     115200
+#define F_CPU    14745600
+
+
 #define UBRR_VALUE (((F_CPU/(BAUD*16UL)))-1)
 
 #include <util/delay.h>
@@ -15,7 +17,7 @@
 
 // size must be in range 2 .. 256
 #define RX0_SIZE    512        // usable: RX0_SIZE + 2 (4 .. 258)
-#define TX0_SIZE    256        // usable: TX0_SIZE + 1 (3 .. 257)
+#define TX0_SIZE    256         // usable: TX0_SIZE + 1 (3 .. 257)
 
 #define    uputs0(x)    uputs0_((u8*)(x))    // avoid char warning
 

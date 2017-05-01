@@ -34,9 +34,13 @@ void sendDataToServer(char *message){
     sprintf(str, "AT+CIPSEND=%d\r\n", strlen(message));
     uputs0(str);
     _delay_ms(5000);
-    uputs0(message);
+
+    char msg[512];
+    sprintf(msg, "%s", message);
+    uputs0(msg);
+    _delay_ms(3000);
     uputs0("\r\n");
-    _delay_ms(6000);
+    _delay_ms(3000);
 
     uputs0("AT+CIPCLOSE\r\n");                              //Close TCP
     _delay_ms(2000);

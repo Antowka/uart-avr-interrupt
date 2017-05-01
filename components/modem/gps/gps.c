@@ -12,28 +12,24 @@
 
 long gpsPockerCounter = COUNTER_NO_BLOCK_DELAY_GPS;
 
-void enableGpsReciver(void) {
+void enableGps(void) {
     uputs0("AT+GPS=1\r\n");
-    delay_1ms(1000);
+    delay_1ms(500);
+}
+
+void disableGps(void) {
+    uputs0("AT+GPS=0\r\n");
+    delay_1ms(500);
+}
+
+void enableGpsReciver(void) {
     uputs0("AT+GPSRD=1\r\n");
-    delay_1ms(1000);
+    delay_1ms(500);
 }
 
 void disableGpsReciver(void) {
     uputs0("AT+GPSRD=0\r\n");
-    delay_1ms(1000);
-    uputs0("AT+GPS=0\r\n");
-    delay_1ms(1000);
-}
-
-/**
- * Check incoming message for gps position
- *
- * @param message
- * @return
- */
-int isGpsCommand(char *message) {
-    return strstr(message, "GPSRD:") != NULL;
+    delay_1ms(500);
 }
 
 /**
@@ -48,8 +44,8 @@ void processNewGPSPosition(char *message) {
         sprintf(str, "GPS::%s\r\n", message);
         sendDataToServer(str);
         gpsPockerCounter = COUNTER_NO_BLOCK_DELAY_GPS;
-        blink();
         free(str);
     }
     gpsPockerCounter--;
+    blink();
 }
