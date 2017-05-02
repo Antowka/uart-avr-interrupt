@@ -40,6 +40,8 @@ void sendConfig(void) {
     delay_1ms(1000);
     uputs0("AT+CMGF=1\r\n");
     delay_1ms(1000);
+    enableGps();
+    delay_1ms(1000);
 }
 
 /**
@@ -48,9 +50,8 @@ void sendConfig(void) {
 void initModem(void) {
 
     initTimerIrq();
-    _delay_ms(5000);
+    _delay_ms(15000);
     initUART();
-
     sendConfig();
 }
 
@@ -63,7 +64,7 @@ void pingModem(void) {
         sendConfig();
         pingCounter = PING_AT_COUNTER;
     } else if (pingCounter < (PING_AT_COUNTER/2)) {
-        _delay_ms(1000);
+        _delay_ms(500);
         uputs0("AT\r\n");
     }
 
@@ -112,12 +113,16 @@ void cleanBuff(void) {
  */
 void modemLoop(void) {
 
+    STOP_TIMER1;
+    _delay_ms(500);
+
     if (timerAprsCounterFlag == 1) {
+        timerAprsCounterFlag = 0;
         pingModem();
         //sendAprs();
-        timerAprsCounterFlag = 0;
-        _delay_ms(200);
+        enableGpsReciver();
     }
+    START_TIMER1;
 
     if (!ukbhit0()) {
         return;
@@ -131,14 +136,23 @@ void modemLoop(void) {
 
     if (buffPointer > 0) {
         if (isSmsCommand(buffLink)) {
+            STOP_TIMER1;
+            disableGpsReciver();
             smsProcessor();
             cleanBuffer();
+            START_TIMER1;
         } else if (strstr(buffLink, "RING") != NULL) {
+            STOP_TIMER1;
+            disableGpsReciver();
             uputs0("ATA\r\n");
             cleanBuffer();
+            START_TIMER1;
         } else if (strstr(buffLink, "GPSRD:") != NULL) {
-            //processNewGPSPosition(buffLink);
+            STOP_TIMER1;
+            disableGpsReciver();
+            processNewGPSPosition(buffLink);
             cleanBuffer();
+            START_TIMER1;
         } else if (strstr(buffLink, "OK") != NULL) {
             blink();
             pingCounter = PING_AT_COUNTER;

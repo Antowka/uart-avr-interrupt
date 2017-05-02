@@ -16,7 +16,7 @@
 
 
 // size must be in range 2 .. 256
-#define RX0_SIZE    512        // usable: RX0_SIZE + 2 (4 .. 258)
+#define RX0_SIZE    256        // usable: RX0_SIZE + 2 (4 .. 258)
 #define TX0_SIZE    256         // usable: TX0_SIZE + 1 (3 .. 257)
 
 #define    uputs0(x)    uputs0_((u8*)(x))    // avoid char warning

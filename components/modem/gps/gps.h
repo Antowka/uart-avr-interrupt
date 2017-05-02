@@ -5,7 +5,7 @@
 #ifndef BLINK_GPS_H
 #define BLINK_GPS_H
 
-#define COUNTER_NO_BLOCK_DELAY_GPS 30
+#define COUNTER_DELAY_ENABLE_RECEIVE 10
 void enableGps(void);
 void disableGps(void);
 void enableGpsReciver(void);

@@ -14,9 +14,6 @@ int main() {
     initEasyAvr();
     initModem();
 
-    enableGps();
-    disableGpsReciver();//enableGpsReciver();
-
     while (1) {
         modemLoop();
     }

@@ -10,26 +10,29 @@
 #include "gps.h"
 #include "../../system/easyavr.h"
 
-long gpsPockerCounter = COUNTER_NO_BLOCK_DELAY_GPS;
+long delayEnableReceiveCounter = COUNTER_DELAY_ENABLE_RECEIVE;
+int isEnableReceive = 0;
 
 void enableGps(void) {
     uputs0("AT+GPS=1\r\n");
-    delay_1ms(500);
 }
 
 void disableGps(void) {
     uputs0("AT+GPS=0\r\n");
-    delay_1ms(500);
 }
 
 void enableGpsReciver(void) {
-    uputs0("AT+GPSRD=1\r\n");
-    delay_1ms(500);
+    if (delayEnableReceiveCounter < 0 && isEnableReceive == 0) {
+        uputs0("AT+GPSRD=1\r\n");
+        isEnableReceive = 1;
+    }
+    delayEnableReceiveCounter--;
 }
 
 void disableGpsReciver(void) {
     uputs0("AT+GPSRD=0\r\n");
-    delay_1ms(500);
+    isEnableReceive = 0;
+    delayEnableReceiveCounter = COUNTER_DELAY_ENABLE_RECEIVE;
 }
 
 /**
@@ -39,13 +42,8 @@ void disableGpsReciver(void) {
  */
 void processNewGPSPosition(char *message) {
 
-    if (gpsPockerCounter <= 0) {
-        char str[strlen(message)+5];
-        sprintf(str, "GPS::%s\r\n", message);
-        sendDataToServer(str);
-        gpsPockerCounter = COUNTER_NO_BLOCK_DELAY_GPS;
-        free(str);
-    }
-    gpsPockerCounter--;
-    blink();
+    char str[strlen(message)+5];
+    sprintf(str, "GPS::%s\r\n", message);
+    //sendDataToServer(str);
+    free(str);
 }

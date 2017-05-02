@@ -10,9 +10,6 @@
 
 void sendDataToServer(char *message){
 
-    STOP_TIMER1;
-    disableGpsReciver();
-
     uputs0("AT+CREG?\r\n");                                 //Query network registration
     _delay_ms(2000);
 
@@ -44,7 +41,4 @@ void sendDataToServer(char *message){
 
     uputs0("AT+CIPCLOSE\r\n");                              //Close TCP
     _delay_ms(2000);
-
-    enableGpsReciver();
-    START_TIMER1;
 }
