@@ -114,12 +114,12 @@ void cleanBuff(void) {
 void modemLoop(void) {
 
     STOP_TIMER1;
-    _delay_ms(500);
+    _delay_ms(300);
 
     if (timerAprsCounterFlag == 1) {
         timerAprsCounterFlag = 0;
         pingModem();
-        //sendAprs();
+        sendAprs();
         enableGpsReciver();
     }
     START_TIMER1;

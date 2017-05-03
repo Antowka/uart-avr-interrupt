@@ -6,19 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../uart/uart.h"
-#include "../gprs/gprs.h"
 #include "gps.h"
-#include "../../system/easyavr.h"
+
 
 long delayEnableReceiveCounter = COUNTER_DELAY_ENABLE_RECEIVE;
 int isEnableReceive = 0;
 
 void enableGps(void) {
     uputs0("AT+GPS=1\r\n");
-}
-
-void disableGps(void) {
-    uputs0("AT+GPS=0\r\n");
 }
 
 void enableGpsReciver(void) {

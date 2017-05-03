@@ -7,7 +7,6 @@
 
 #define COUNTER_DELAY_ENABLE_RECEIVE 10
 void enableGps(void);
-void disableGps(void);
 void enableGpsReciver(void);
 void disableGpsReciver(void);
 void processNewGPSPosition(char *message);

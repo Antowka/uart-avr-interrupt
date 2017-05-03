@@ -5,7 +5,7 @@ SET(CMAKE_SYSTEM_NAME Generic)
 PROJECT(blink)
 
 SET(DEVICE "atmega328p")
-SET(FREQ "16000000")
+SET(FREQ "14745600")
 
 #============================================================================================
 
@@ -19,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 #============================================================================================
 
-SET(SOURCE_FILES main.c components/system/easyavr.h components/uart/uart.c components/uart/uart.h components/modem/sms/sms.c components/modem/sms/sms.h components/debug/debug.h components/debug/debug.c components/modem/modem.c components/modem/modem.h components/system/easyavr.c components/modem/gprs/gprs.c components/modem/gprs/gprs.h components/modem/gps/gps.c components/modem/gps/gps.h)
+SET(SOURCE_FILES main.c components/system/easyavr.h components/uart/uart.c components/uart/uart.h components/modem/sms/sms.c components/modem/sms/sms.h components/modem/modem.c components/modem/modem.h components/system/easyavr.c components/modem/gprs/gprs.c components/modem/gprs/gprs.h components/modem/gps/gps.c components/modem/gps/gps.h components/modem/gps/nmea/nmea.h components/modem/gps/nmea/nmea.c)
 
 #============================================================================================
 
