@@ -44,11 +44,17 @@ void sendConfig(void) {
     delay_1ms(1000);
 }
 
+void enableModem(void) {
+    PIN_ON(PORTB, 1);
+    _delay_ms(1000);
+    PIN_OFF(PORTB, 1);
+}
+
 /**
  * Send AT command for check connection and sync speed
  */
 void initModem(void) {
-
+    enableModem();
     initTimerIrq();
     _delay_ms(15000);
     initUART();
@@ -63,7 +69,7 @@ void pingModem(void) {
     if (pingCounter <= 0) {
         sendConfig();
         pingCounter = PING_AT_COUNTER;
-    } else if (pingCounter < (PING_AT_COUNTER/2)) {
+    } else if (pingCounter < (PING_AT_COUNTER / 2)) {
         _delay_ms(500);
         uputs0("AT\r\n");
     }
@@ -119,7 +125,7 @@ void modemLoop(void) {
     if (timerAprsCounterFlag == 1) {
         timerAprsCounterFlag = 0;
         pingModem();
-        sendAprs();
+        //sendAprs();
         enableGpsReciver();
     }
     START_TIMER1;

@@ -1,7 +1,6 @@
 
 #include "components/modem/modem.h"
 #include "components/system/easyavr.h"
-#include "components/modem/gps/gps.h"
 
 
 /**
