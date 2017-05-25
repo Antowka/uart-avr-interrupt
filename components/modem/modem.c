@@ -50,11 +50,20 @@ void enableModem(void) {
     PIN_OFF(PORTB, 1);
 }
 
+void disableModem(void) {
+    //PIN_ON(PORTD, 6);
+    //_delay_ms(10000);
+    //PIN_OFF(PORTD, 6);
+    uputs0("AT+CPOF\r\n");
+}
+
 /**
  * Send AT command for check connection and sync speed
  */
 void initModem(void) {
+
     enableModem();
+    _delay_ms(10000);
     initTimerIrq();
     _delay_ms(15000);
     initUART();
@@ -125,7 +134,7 @@ void modemLoop(void) {
     if (timerAprsCounterFlag == 1) {
         timerAprsCounterFlag = 0;
         pingModem();
-        //sendAprs();
+        sendAprs();
         enableGpsReciver();
     }
     START_TIMER1;
