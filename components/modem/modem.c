@@ -37,11 +37,12 @@ void initTimerIrq(void) {
 void sendConfig(void) {
 
     uputs0("ATE0\r\n");
-    delay_1ms(1000);
+    delay_1ms(800);
     uputs0("AT+CMGF=1\r\n");
-    delay_1ms(1000);
+    delay_1ms(800);
     enableGps();
-    delay_1ms(1000);
+    delay_1ms(800);
+    disableGpsReciver();
 }
 
 void enableModem(void) {
@@ -51,9 +52,6 @@ void enableModem(void) {
 }
 
 void disableModem(void) {
-    //PIN_ON(PORTD, 6);
-    //_delay_ms(10000);
-    //PIN_OFF(PORTD, 6);
     uputs0("AT+CPOF\r\n");
 }
 
@@ -65,7 +63,6 @@ void initModem(void) {
     enableModem();
     _delay_ms(10000);
     initTimerIrq();
-    _delay_ms(15000);
     initUART();
     sendConfig();
 }
@@ -90,7 +87,6 @@ void pingModem(void) {
  * Send APRS DATA
  */
 void sendAprs(void) {
-
     if (aprsCounter <= 0) {
         sendDataToServer(
                 "UC6KFQ>APRS,TCPIP*,qAC,T2GREECE:!5619.09N/04403.24Eyop.Anton (UC6KFQ/3) 145.500Mhz/433.500Mhz");
@@ -129,12 +125,11 @@ void cleanBuff(void) {
 void modemLoop(void) {
 
     STOP_TIMER1;
-    _delay_ms(300);
-
+    _delay_ms(500);
     if (timerAprsCounterFlag == 1) {
         timerAprsCounterFlag = 0;
         pingModem();
-        sendAprs();
+        //sendAprs(); //TODO: enable for send APRS-data to server
         enableGpsReciver();
     }
     START_TIMER1;
@@ -143,11 +138,11 @@ void modemLoop(void) {
         return;
     }
 
+
     do {
         buffLink[buffPointer] = ugetchar0();
         buffPointer++;
     } while (ukbhit0());
-
 
     if (buffPointer > 0) {
         if (isSmsCommand(buffLink)) {
@@ -162,7 +157,7 @@ void modemLoop(void) {
             uputs0("ATA\r\n");
             cleanBuffer();
             START_TIMER1;
-        } else if (strstr(buffLink, "GPSRD:") != NULL) {
+        } else if (strstr(buffLink, "GPGGA")  != NULL) {
             STOP_TIMER1;
             disableGpsReciver();
             processNewGPSPosition(buffLink);

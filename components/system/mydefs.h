@@ -1,7 +1,7 @@
 #ifndef _mydefs_h_
 #define _mydefs_h_
 
-#define COUNTER_NO_BLOCK_DELAY_APRS 25
+#define COUNTER_NO_BLOCK_DELAY_APRS 20
 #define PING_AT_COUNTER 6
 #define LED_PIN 5
 
@@ -15,7 +15,7 @@ typedef unsigned long  u32;
 typedef   signed long  s32;
 
 
-// 			Access bits like variables:
+//Access bits like variables:
 
 struct bits {
     u8 b0:1;

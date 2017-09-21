@@ -1,4 +1,3 @@
-
 #include "components/modem/modem.h"
 #include "components/system/easyavr.h"
 
@@ -16,8 +15,6 @@ int main() {
     while (1) {
         modemLoop();
     }
-
-    return 0;
 }
 
 
