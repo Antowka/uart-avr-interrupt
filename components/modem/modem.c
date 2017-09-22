@@ -3,6 +3,7 @@
 //
 #include <util/delay.h>
 #include <string.h>
+#include <stdio.h>
 #include "../system/mydefs.h"
 #include "../uart/uart.h"
 #include "sms/sms.h"
@@ -118,11 +119,26 @@ void cleanBuff(void) {
     buffPointer = 0;
 }
 
+/**
+ * return free ram (FOR DEBUG)
+ *
+ * @return
+ */
+void freeRam () {
+    extern int __heap_start, *__brkval;
+    int v;
+    int t = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+
+    char buf[12];
+    sprintf(buf, "FREE MEM: %d \r\n", t);
+    uputs0(buf);
+}
 
 /**
  * call from main loop
  */
 void modemLoop(void) {
+
 
     STOP_TIMER1;
     _delay_ms(500);
@@ -131,6 +147,9 @@ void modemLoop(void) {
         pingModem();
         //sendAprs(); //TODO: enable for send APRS-data to server
         enableGpsReciver();
+
+        //TODO: for only debug memory
+        //freeRam();
     }
     START_TIMER1;
 
@@ -145,6 +164,7 @@ void modemLoop(void) {
     } while (ukbhit0());
 
     if (buffPointer > 0) {
+
         if (isSmsCommand(buffLink)) {
             STOP_TIMER1;
             disableGpsReciver();
@@ -168,6 +188,7 @@ void modemLoop(void) {
             pingCounter = PING_AT_COUNTER;
             cleanBuffer();
         }
+
         cleanBuff();
     }
 }
