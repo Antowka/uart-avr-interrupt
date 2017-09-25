@@ -5,6 +5,8 @@
 #ifndef BLINK_GPRS_H
 #define BLINK_GPRS_H
 
-void sendDataToServer(char *message);
+#define APN_ADDRESS "internet.mts.ru"
+
+void sendDataToUdpPort(char *host, int port, char *data);
 
 #endif //BLINK_GPRS_H

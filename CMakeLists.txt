@@ -26,7 +26,7 @@ SET(SOURCE_FILES
         components/modem/sms/sms.h components/modem/modem.c
         components/modem/modem.h components/system/easyavr.c
         components/modem/gprs/gprs.c components/modem/gprs/gprs.h
-        components/modem/gps/gps.c components/modem/gps/gps.h)
+        components/modem/gps/gps.c components/modem/gps/gps.h components/modem/debug/memory.h components/modem/debug/memory.c components/modem/aprs/aprs.h components/modem/aprs/aprs.c)
 #============================================================================================
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCE_FILES})

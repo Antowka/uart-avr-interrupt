@@ -16,7 +16,7 @@ void enableGps(void) {
     uputs0("AT+GPS=1\r\n");
 }
 
-void enableGpsReciver(void) {
+void enableGpsReceiver(void) {
     if (delayEnableReceiveCounter < 0 && isEnableReceive == 0) {
         uputs0("AT+GPSRD=1\r\n");
         isEnableReceive = 1;
@@ -24,7 +24,7 @@ void enableGpsReciver(void) {
     delayEnableReceiveCounter--;
 }
 
-void disableGpsReciver(void) {
+void disableGpsReceiver(void) {
     uputs0("AT+GPSRD=0\r\n");
     isEnableReceive = 0;
     delayEnableReceiveCounter = COUNTER_DELAY_ENABLE_RECEIVE;

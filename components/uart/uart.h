@@ -17,7 +17,7 @@
 
 // size must be in range 2 .. 256
 #define RX0_SIZE    128      // usable: RX0_SIZE + 2 (4 .. 258)
-#define TX0_SIZE    128        // usable: TX0_SIZE + 1 (3 .. 257)
+#define TX0_SIZE    256        // usable: TX0_SIZE + 1 (3 .. 257)
 
 #define    uputs0(x)    uputs0_((u8*)(x))    // avoid char warning
 
@@ -28,6 +28,7 @@ u8 utx0_ready(void);         // 0 = tx still busy
 void uputchar0(u8 c);        // send byte
 void uputs0_(u8 *s);         // send string from SRAM
 void init_uart0();
+void cleanTxBuffer();
 void cleanBuffer(void);
 
 void delay_1ms(u16 i);

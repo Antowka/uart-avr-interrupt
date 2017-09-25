@@ -7,8 +7,8 @@
 
 #define COUNTER_DELAY_ENABLE_RECEIVE 10
 void enableGps(void);
-void enableGpsReciver(void);
-void disableGpsReciver(void);
+void enableGpsReceiver(void);
+void disableGpsReceiver(void);
 void processNewGPSPosition(char *message);
 
 #endif //BLINK_GPS_H

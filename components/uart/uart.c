@@ -95,8 +95,9 @@ void cleanTxBuffer(void) {
 
 void uputs0_(u8 *s) {
     cleanTxBuffer();
-    while (*s)
+    while (*s) {
         uputchar0(*s++);
+    }
 }
 
 void delay_1ms(u16 i) {

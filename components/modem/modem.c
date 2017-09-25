@@ -4,6 +4,7 @@
 #include <util/delay.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "../system/mydefs.h"
 #include "../uart/uart.h"
 #include "sms/sms.h"
@@ -11,6 +12,8 @@
 #include "modem.h"
 #include "gps/gps.h"
 #include "../system/easyavr.h"
+#include "aprs/aprs.h"
+#include "debug/memory.h"
 
 /**
  * Counter for interrupt timer before send aprs
@@ -43,7 +46,7 @@ void sendConfig(void) {
     delay_1ms(800);
     enableGps();
     delay_1ms(800);
-    disableGpsReciver();
+    disableGpsReceiver();
 }
 
 void enableModem(void) {
@@ -89,8 +92,7 @@ void pingModem(void) {
  */
 void sendAprs(void) {
     if (aprsCounter <= 0) {
-        sendDataToServer(
-                "UC6KFQ>APRS,TCPIP*,qAC,T2GREECE:!5619.09N/04403.24Eyop.Anton (UC6KFQ/3) 145.500Mhz/433.500Mhz");
+        sendAprsPosition("5619.08N", "4403.27E", "op.Anton", "y");
         aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
     }
     aprsCounter--;
@@ -101,9 +103,9 @@ void sendAprs(void) {
  */
 void smsProcessor() {
 
-    char *sms = cleanSmsText(buffLink);
+    char *smsCommand = cleanSmsText(buffLink);
 
-    if (strstr(sms, "ping")) {
+    if (strstr(smsCommand, "ping")) {
         STOP_TIMER1;
         sendSms("+79875359969", "pong");
         _delay_ms(3000);
@@ -119,20 +121,6 @@ void cleanBuff(void) {
     buffPointer = 0;
 }
 
-/**
- * return free ram (FOR DEBUG)
- *
- * @return
- */
-void freeRam () {
-    extern int __heap_start, *__brkval;
-    int v;
-    int t = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-
-    char buf[12];
-    sprintf(buf, "FREE MEM: %d \r\n", t);
-    uputs0(buf);
-}
 
 /**
  * call from main loop
@@ -145,12 +133,11 @@ void modemLoop(void) {
     if (timerAprsCounterFlag == 1) {
         timerAprsCounterFlag = 0;
         pingModem();
-        //sendAprs(); //TODO: enable for send APRS-data to server
-        enableGpsReciver();
-
-        //TODO: for only debug memory
-        //freeRam();
+        sendAprs(); //TODO: enable for send APRS-data to server
+        //freeMemPrintToUART(); //TODO: Only for debug free mem with output to UART
+        //enableGpsReceiver();
     }
+    _delay_ms(500);
     START_TIMER1;
 
     if (!ukbhit0()) {
@@ -167,19 +154,19 @@ void modemLoop(void) {
 
         if (isSmsCommand(buffLink)) {
             STOP_TIMER1;
-            disableGpsReciver();
+            disableGpsReceiver();
             smsProcessor();
             cleanBuffer();
             START_TIMER1;
         } else if (strstr(buffLink, "RING") != NULL) {
             STOP_TIMER1;
-            disableGpsReciver();
+            disableGpsReceiver();
             uputs0("ATA\r\n");
             cleanBuffer();
             START_TIMER1;
         } else if (strstr(buffLink, "GPGGA")  != NULL) {
             STOP_TIMER1;
-            disableGpsReciver();
+            disableGpsReceiver();
             processNewGPSPosition(buffLink);
             cleanBuffer();
             START_TIMER1;
