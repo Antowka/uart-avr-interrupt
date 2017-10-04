@@ -1,238 +1,95 @@
-#include <string.h>
-#include <stdint.h>
+#include <stdlib.h>
 #include "nmea.h"
 
 
-// Global variables
-extern uint8_t status;
-extern char NMEAPacket[80];
-extern char GPGGA[80];
-double pi = 3.141592653589793238462643;
-
-uint8_t nmeaProcess(char *NMEAPacket) {
-
-    uint8_t foundpacket = NMEA_NODATA;
-
-    // check message type and process appropriately
-    if (!strncmp(NMEAPacket, "GPGGA", 5)) {
-        // process packet of this type
-
-        nmeaProcessGPGGA(NMEAPacket);
-        // report packet type
-        foundpacket = NMEA_GPGGA;
-    } else if (!strncmp(NMEAPacket, "GPRMC", 5)) {
-        // process packet of this type
-        nmeaProcessGPRMC(NMEAPacket);
-        // report packet type
-        foundpacket = NMEA_GPRMC;
+char Time[12]=""; //время
+char Status[2]=""; //валидность
+char SLatitude[16]="";  //Латитуда
+char NS[3]="";                          //
+char SLongitude[12]="";         //Лонгитуда
+char EW[3]="";                          //
+char CourseTrue[10]="";                 // курс
+char Date[12]="";                       //Дата
+char SatCount[4]="";                    //используемых спутников
+char AltitudaMSL[12]="";            //высота
+char ViewSat[4];   //
+char COG[8]="";                 //
+char COGstat[4]="";             //
+char Speed[8]="";                       //скорость
+char SpeedAlt[8]="";    //
+char UNUSED[32]="";                     //мусорка, тут все данные, которые не нужны
+char Knot[8]="";
+char *const RMC[]={Time,Status,SLatitude,NS,SLongitude,EW,UNUSED,CourseTrue,Date,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED};
+char *const GGA[]={UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,SatCount,UNUSED,AltitudaMSL,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED};
+char *const GSV[]={UNUSED,UNUSED,ViewSat,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED,UNUSED};
+char *const VTG[]={COG,COGstat, UNUSED,UNUSED,Knot,UNUSED,Speed,UNUSED,UNUSED,UNUSED};
+unsigned char GLONAS_COUNT=0;
+unsigned char GPS_COUNT=0;
+volatile char DataDone=0;
+unsigned char DataValid=0;
+void Parser(unsigned char data) {
+    static unsigned char ByteCount=0xff;
+    static unsigned int MsgType;
+    static char *MsgTxt=(char*)&MsgType;
+    static  unsigned char ComaPoint=0xff;
+    static unsigned char CharPoint=0;
+    if(data=='$'){ByteCount=0;ComaPoint=0xff;MsgTxt=(char*)&MsgType; return;} //ждем начала стрки
+    if(ByteCount==0xff) return;                                                                     //
+    ByteCount++;
+    if(ByteCount<=1)        return;                                                         //
+    if(ByteCount<6&&ByteCount>1)            //берем 4 символа заголовка
+    {
+        *MsgTxt=data;   //и делаем из него число
+        MsgTxt++;
+        return;
     }
+//
+    switch(MsgType) {
 
+        case    0x434D5250:                             //GPRMC
 
-    return foundpacket;
+        case    0x434D524E:                             //GNRMC
+            if(data==',') {ComaPoint++;     CharPoint=0;RMC[ComaPoint][0]=0;return;}
+            if(data=='*') {MsgType=0;return;}
+            RMC[ComaPoint][CharPoint++]=data;
+            RMC[ComaPoint][CharPoint]=0;
+            return;
+        //case    0x41474750:                             //PGGA
+        case    0x4147474e:                             //NGGA
+            if(data==',')  {ComaPoint++;    CharPoint=0;GGA[ComaPoint][0]=0;return;}
+            if(data=='*') {MsgType=0;return;}
+            GGA[ComaPoint][CharPoint++]=data;
+            GGA[ComaPoint][CharPoint]=0;
+            return;
+        case    0x47545650:             //PVTG
+            if(data==',')  {ComaPoint++;    CharPoint=0;VTG[ComaPoint][0]=0;return;}
+            if(data=='*') {return;}
+            VTG[ComaPoint][CharPoint++]=data;
+            VTG[ComaPoint][CharPoint]=0;
+            return;
+        case    0x4754564e:             //NVTG
+            if(data==',')  {ComaPoint++;    CharPoint=0;VTG[ComaPoint][0]=0;return;}
+            if(data=='*') {return;}
+            VTG[ComaPoint][CharPoint++]=data;
+            VTG[ComaPoint][CharPoint]=0;
+            return;
+        case    0x56534750:             //PGSV
+            if(data==',')  {ComaPoint++;    CharPoint=0;GSV[ComaPoint][0]=0;return;}
+            if(data=='*')  {GPS_COUNT=atoi(ViewSat);MsgType=0;return;}
+            GSV[ComaPoint][CharPoint++]=data;
+            GSV[ComaPoint][CharPoint]=0;
+            return;
+        case    0x5653474c:             //LGSV
+            if(data==',')  {ComaPoint++;    CharPoint=0;GSV[ComaPoint][0]=0;return;}
+            if(data=='*') {GLONAS_COUNT=atoi(ViewSat);MsgType=0;return;}
+            GSV[ComaPoint][CharPoint++]=data;
+            GSV[ComaPoint][CharPoint]=0;
+            return;
+        default:        ByteCount=0xff;break;
+    }
+    ByteCount=0xff;
 }
 
-void nmeaProcessGPGGA(char *packet) {
-
-    uint8_t i;
-    uint8_t GPIndex = 0;
-
-
-    //start parsing just after "GPGGA,"
-    i = 6;
-    // attempt to reject empty packets right away
-    if ((packet[i] == ',') & (packet[i + 1] == ',')) return;
-
-
-    // get UTC time [hhmmss.sss]
-    while (packet[i] != ',')                // next field: Time
-    {
-        GPSTime[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field: Latitude
-    {
-        //do nothing
-        i++;
-        GPIndex++;
-    }
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field: N/S
-    {
-        //do nothing
-        i++;
-        GPIndex++;
-    }
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field: Longitude
-    {
-        //do nothing
-        i++;
-        GPIndex++;
-    }
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field: E/W
-    {
-        //do nothing
-        i++;
-        GPIndex++;
-    }
-    i++;
-    GPIndex = 0;
-
-    while (packet[i] != ',')                // next field:Fix Quality
-    {
-        FixQuality = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:No of satellites
-    {
-        //bypass no of satellites
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:horizontal dilution of position
-    {
-        //bypass horizontal dilution of position
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:Altitude in meters above sea level
-    {
-        Altitude[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-    //GPIndex=0;
-    // next field: longitude					//this method can be used to access a variable directly
-    //for(int i=25;i<35;i++)
-    //{
-    //Long[GPIndex]=packet[i];
-    //GPIndex++;
-    //}
-    // get latitude [ddmm.mmmmm]
-    //latitude = strtod(&packet[i], &endptr);
-
-    //minutesfrac = modf(latitude/100, &degrees);
-    //latitude= degrees + (minutesfrac*100)/60;
-    //latitude *= (pi/180);
-}
-
-void nmeaProcessGPGSV(char *packet) {
-}
-
-void nmeaProcessGPRMC(char *packet) {
-    uint8_t i;
-    uint8_t GPIndex = 0;
-
-
-    //start parsing just after "GPRMC,"
-    i = 6;
-    // attempt to reject empty packets right away
-    if (packet[i] == ',' & packet[i + 1] == ',') return;
-
-    while (packet[i] != ',')                // next field: Time
-    {
-        //do nothing
-        i++;
-        GPIndex++;
-    }
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field: Navigation warning
-    {
-        //do nothing
-        i++;
-        GPIndex++;
-    }
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:Latitude
-    {
-        Lat[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:N/S
-    {
-        NS[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:Longitude
-    {
-        Long[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:E/W
-    {
-        EW[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    // get speed
-    while (packet[i] != ',')                // next field: speed
-    {
-        Speed[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:Course made good
-    {
-        Heading[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-    i++;
-    GPIndex = 0;
-    while (packet[i] != ',')                // next field:Date
-    {
-        GPSDate[GPIndex] = packet[i];
-        i++;
-        GPIndex++;
-    }
-
-
+char *getDate() {
+    return &Date[12];
 }

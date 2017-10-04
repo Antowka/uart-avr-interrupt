@@ -4,9 +4,9 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include "../../uart/uart.h"
 #include "gps.h"
+#include "nmea/nmea.h"
 
 
 long delayEnableReceiveCounter = COUNTER_DELAY_ENABLE_RECEIVE;
@@ -37,8 +37,10 @@ void disableGpsReceiver(void) {
  */
 void processNewGPSPosition(char *message) {
 
-    char str[strlen(message)+5];
-    sprintf(str, "GPS::%s\r\n", message);
-    //sendDataToServer(str);
-    free(str);
+    Parser((unsigned char) message);
+
+    char str[strlen(getDate()) + 9];
+
+    sprintf(str, "GPS::%s\r\n", getDate());
+    uputs0(str);
 }
