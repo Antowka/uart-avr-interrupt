@@ -15,16 +15,14 @@
 /**
  * Counter for interrupt timer before send aprs
  */
-long aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
+int aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
 long pingCounter = PING_AT_COUNTER;
 
 /**
  * Flag is changing by TIMER ISR
  */
 int timerAprsCounterFlag = 0;
-char buff[RX0_SIZE] = "";
-char *buffLink = (char *) &buff;
-int buffPointer = 0;
+
 
 void initTimerIrq(void) {
     TCCR1B = (1 << CS12) | (0 << CS11) | (1 << CS10); //CPU_SPEED/1024
@@ -37,8 +35,6 @@ void initTimerIrq(void) {
  */
 void sendConfig(void) {
 
-    uputs0("AT&F\r\n");
-    delay_1ms(800);
     uputs0("ATE0\r\n");
     delay_1ms(800);
     uputs0("AT+CMGF=1\r\n");
@@ -52,10 +48,6 @@ void enableModem(void) {
     PIN_ON(PORTB, 1);
     _delay_ms(1000);
     PIN_OFF(PORTB, 1);
-}
-
-void disableModem(void) {
-    uputs0("AT+CPOF\r\n");
 }
 
 /**
@@ -100,9 +92,9 @@ void sendAprs(void) {
 /**
  * process incoming sms
  */
-void smsProcessor() {
+void smsProcessor(char *message) {
 
-    char *smsCommand = cleanSmsText(buffLink);
+    char *smsCommand = cleanSmsText(message);
 
     if (strstr(smsCommand, "ping")) {
         STOP_TIMER1;
@@ -113,26 +105,20 @@ void smsProcessor() {
 }
 
 /**
- * CLean buffer
- */
-void cleanBuff(void) {
-    memset(buffLink, 0, sizeof buffLink);
-    buffPointer = 0;
-}
-
-
-/**
  * call from main loop
  */
 void modemLoop(void) {
 
+    char buff[RX0_SIZE] = "";
+    char *buffLink = (char *) &buff;
+    int buffPointer = 0;
 
     STOP_TIMER1;
     _delay_ms(500);
-    if (timerAprsCounterFlag == 1) {
+    if (timerAprsCounterFlag) {
         timerAprsCounterFlag = 0;
         pingModem();
-        sendAprs();
+        //sendAprs();
         //enableGpsReceiver();
     }
     _delay_ms(500);
@@ -148,12 +134,12 @@ void modemLoop(void) {
         buffPointer++;
     } while (ukbhit0());
 
-    if (buffPointer > 0) {
+    if (buffPointer) {
 
         if (isSmsCommand(buffLink)) {
             STOP_TIMER1;
             disableGpsReceiver();
-            smsProcessor();
+            smsProcessor(buffLink);
             cleanBuffer();
             START_TIMER1;
         } else if (strstr(buffLink, "RING") != NULL) {
@@ -173,8 +159,6 @@ void modemLoop(void) {
             pingCounter = PING_AT_COUNTER;
             cleanBuffer();
         }
-
-        cleanBuff();
     }
 }
 
