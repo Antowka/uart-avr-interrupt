@@ -8,20 +8,18 @@
 #include "../uart/uart.h"
 #include "sms/sms.h"
 #include "modem.h"
-#include "gps/gps.h"
 #include "../system/easyavr.h"
-#include "aprs/aprs.h"
+#include "dtmf/dtmf.h"
 
 /**
  * Counter for interrupt timer before send aprs
  */
-int aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
 long pingCounter = PING_AT_COUNTER;
 
 /**
  * Flag is changing by TIMER ISR
  */
-int timerAprsCounterFlag = 0;
+int timerFinishFlag = 0;
 
 
 void initTimerIrq(void) {
@@ -35,13 +33,18 @@ void initTimerIrq(void) {
  */
 void sendConfig(void) {
 
-    uputs0("ATE0\r\n");
+    uputs0("AT\r");
     delay_1ms(800);
-    uputs0("AT+CMGF=1\r\n");
+    uputs0("ATE0\r");
     delay_1ms(800);
-    enableGps();
+    uputs0("AT+CMGD=1,4\r");
     delay_1ms(800);
-    disableGpsReceiver();
+    uputs0("AT+CMGF=1\r");
+    delay_1ms(800);
+    uputs0("AT+CNMI=1,2,0,0,0\r");
+    delay_1ms(800);
+    uputs0("AT+DDET=1\r");
+    delay_1ms(800);
 }
 
 void enableModem(void) {
@@ -55,8 +58,8 @@ void enableModem(void) {
  */
 void initModem(void) {
 
-    enableModem();
-    _delay_ms(10000);
+    //enableModem();
+    _delay_ms(3000);
     initTimerIrq();
     initUART();
     sendConfig();
@@ -71,22 +74,10 @@ void pingModem(void) {
         sendConfig();
         pingCounter = PING_AT_COUNTER;
     } else if (pingCounter < (PING_AT_COUNTER / 2)) {
-        _delay_ms(500);
         uputs0("AT\r\n");
     }
 
     pingCounter--;
-}
-
-/**
- * Send APRS DATA
- */
-void sendAprs(void) {
-    if (aprsCounter <= 0) {
-        sendAprsPosition("5619.08N", "4403.27E", "op.Anton", "y");
-        aprsCounter = COUNTER_NO_BLOCK_DELAY_APRS;
-    }
-    aprsCounter--;
 }
 
 /**
@@ -97,10 +88,8 @@ void smsProcessor(char *message) {
     char *smsCommand = cleanSmsText(message);
 
     if (strstr(smsCommand, "ping")) {
-        STOP_TIMER1;
         sendSms("+79875359969", "pong");
-        _delay_ms(3000);
-        START_TIMER1;
+        _delay_ms(1000);
     }
 }
 
@@ -113,16 +102,14 @@ void modemLoop(void) {
     char *buffLink = (char *) &buff;
     int buffPointer = 0;
 
-    STOP_TIMER1;
-    _delay_ms(500);
-    if (timerAprsCounterFlag) {
-        timerAprsCounterFlag = 0;
+    if (timerFinishFlag) {
+        STOP_TIMER1;
+        timerFinishFlag = 0;
         pingModem();
-        //sendAprs();
-        //enableGpsReceiver();
+        START_TIMER1;
     }
-    _delay_ms(500);
-    START_TIMER1;
+
+    _delay_ms(800);
 
     if (!ukbhit0()) {
         return;
@@ -130,34 +117,37 @@ void modemLoop(void) {
 
 
     do {
-        buffLink[buffPointer] = ugetchar0();
-        buffPointer++;
+        buffLink[buffPointer++] = ugetchar0();
     } while (ukbhit0());
 
     if (buffPointer) {
 
         if (isSmsCommand(buffLink)) {
             STOP_TIMER1;
-            disableGpsReceiver();
             smsProcessor(buffLink);
             cleanBuffer();
             START_TIMER1;
+        } else if (isDtmf(buffLink)) {
+
+            if (isLastDtmf(buffLink)) {
+                uputs0(getDtmfCode());
+            } else {
+                addSymbolToDtmfCode(buffLink);
+            }
+
         } else if (strstr(buffLink, "RING") != NULL) {
             STOP_TIMER1;
-            disableGpsReceiver();
             uputs0("ATA\r\n");
-            cleanBuffer();
-            START_TIMER1;
-        } else if (strstr(buffLink, "GPGGA")  != NULL) {
-            STOP_TIMER1;
-            disableGpsReceiver();
-            processNewGPSPosition(buffLink);
+            _delay_ms(1000);
+            uputs0("AT+VTS=\"1,4,#,A,6,7,0\"\r\n");
             cleanBuffer();
             START_TIMER1;
         } else if (strstr(buffLink, "OK") != NULL) {
+            STOP_TIMER1;
             blink();
             pingCounter = PING_AT_COUNTER;
             cleanBuffer();
+            START_TIMER1;
         }
     }
 }
@@ -167,5 +157,5 @@ void modemLoop(void) {
  * Handler for timer's interrupts
  */
 ISR(TIMER1_OVF_vect) {
-    timerAprsCounterFlag = 1;
+    timerFinishFlag = 1;
 }

@@ -25,11 +25,7 @@ SET(SOURCE_FILES
         components/uart/uart.h components/modem/sms/sms.c
         components/modem/sms/sms.h components/modem/modem.c
         components/modem/modem.h components/system/easyavr.c
-        components/modem/gprs/gprs.c components/modem/gprs/gprs.h
-        components/modem/gps/nmea/nmea.h components/modem/gps/nmea/nmea.c
-        components/modem/gps/gps.c components/modem/gps/gps.h
-        components/modem/debug/memory.h components/modem/debug/memory.c
-        components/modem/aprs/aprs.h components/modem/aprs/aprs.c)
+        components/modem/gprs/gprs.c components/modem/gprs/gprs.h components/modem/dtmf/dtmf.h components/modem/dtmf/dtmf.c)
 #============================================================================================
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCE_FILES})

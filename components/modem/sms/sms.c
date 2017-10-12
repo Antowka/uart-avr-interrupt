@@ -43,15 +43,21 @@ void sendSms(char *phone, char *text) {
 
     char phoneCommand[25];
     char smsText[64];
-    sprintf(phoneCommand, "AT+CMGS=%s\r\n", phone);
-    sprintf(smsText, "%s\032", text);
 
-    uputs0("AT+CMGF=1\r\n");
+    uputs0("AT+CSCS=\"GSM\"\r");
+
     _delay_ms(1000);
-    uputs0("AT+CSCS=UCS2\r\n");
+    uputs0("AT+CMGF=1\r");
+
     _delay_ms(1000);
+    sprintf(phoneCommand, "AT+CMGS=\"%s\"\r", phone);
     uputs0(phoneCommand);
+
     _delay_ms(1000);
-    uputs0(smsText);
+    sprintf(smsText, "%s", text);
+    uputs0(text);
+
+    _delay_ms(800);
+    uputs0("\x1A");
 }
 
