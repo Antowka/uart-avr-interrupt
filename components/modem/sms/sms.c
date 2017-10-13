@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "sms.h"
 #include "../../uart/uart.h"
+#include "../../system/easyavr.h"
 
 static char sms_buff[BUFF_SIZE];
 static char *buffPointer = (char *) &sms_buff;
@@ -44,20 +45,17 @@ void sendSms(char *phone, char *text) {
     char phoneCommand[25];
     char smsText[64];
 
-    uputs0("AT+CSCS=\"GSM\"\r");
+    uputs0("AT+CSCS=\"GSM\"\r\n");
 
-    _delay_ms(1000);
+    custom_delay_ms(1000);
     uputs0("AT+CMGF=1\r");
 
-    _delay_ms(1000);
-    sprintf(phoneCommand, "AT+CMGS=\"%s\"\r", phone);
+    custom_delay_ms(1000);
+    sprintf(phoneCommand, "AT+CMGS=\"%s\"\r\n", phone);
     uputs0(phoneCommand);
 
-    _delay_ms(1000);
-    sprintf(smsText, "%s", text);
-    uputs0(text);
-
-    _delay_ms(800);
-    uputs0("\x1A");
+    custom_delay_ms(1000);
+    sprintf(smsText, "%s\032", text);
+    uputs0(smsText);
 }
 

@@ -4,8 +4,8 @@
 #define PING_AT_COUNTER 6
 #define LED_PIN 5
 
-//			Easier type writing:
 
+//Easier type writing:
 typedef unsigned char  u8;
 typedef   signed char  s8;
 typedef unsigned short u16;

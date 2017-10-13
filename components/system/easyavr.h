@@ -48,5 +48,6 @@
 
 void initEasyAvr(void);
 void blink(void);
+void custom_delay_ms(const int delayTimeout);
 
 #endif

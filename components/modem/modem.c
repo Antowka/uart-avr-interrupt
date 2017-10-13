@@ -28,11 +28,27 @@ void initTimerIrq(void) {
     TCNT1 = 0;
 }
 
+void onOffModem(void) {
+    PIN_ON(PORTB, 1);
+    custom_delay_ms(1500);
+    PIN_OFF(PORTB, 1);
+}
+
+void enableRelay(void) {
+    PIN_OFF(PORTB, 0);
+}
+
+void disableRelay(void) {
+    PIN_ON(PORTB, 0);
+}
+
 /**
  * Send default config
  */
 void sendConfig(void) {
 
+    onOffModem();
+    custom_delay_ms(5000);
     uputs0("AT\r");
     delay_1ms(800);
     uputs0("ATE0\r");
@@ -47,19 +63,10 @@ void sendConfig(void) {
     delay_1ms(800);
 }
 
-void enableModem(void) {
-    PIN_ON(PORTB, 1);
-    _delay_ms(1000);
-    PIN_OFF(PORTB, 1);
-}
-
 /**
  * Send AT command for check connection and sync speed
  */
 void initModem(void) {
-
-    //enableModem();
-    _delay_ms(3000);
     initTimerIrq();
     initUART();
     sendConfig();
@@ -89,7 +96,6 @@ void smsProcessor(char *message) {
 
     if (strstr(smsCommand, "ping")) {
         sendSms("+79875359969", "pong");
-        _delay_ms(1000);
     }
 }
 
@@ -109,7 +115,7 @@ void modemLoop(void) {
         START_TIMER1;
     }
 
-    _delay_ms(800);
+    custom_delay_ms(800);
 
     if (!ukbhit0()) {
         return;
@@ -130,7 +136,12 @@ void modemLoop(void) {
         } else if (isDtmf(buffLink)) {
 
             if (isLastDtmf(buffLink)) {
-                uputs0(getDtmfCode());
+                if(strcmp(getDtmfCode(), "01") == 0) {
+                    enableRelay();
+                } else if (strcmp(getDtmfCode(), "02") == 0) {
+                    disableRelay();
+                }
+
             } else {
                 addSymbolToDtmfCode(buffLink);
             }
@@ -138,7 +149,7 @@ void modemLoop(void) {
         } else if (strstr(buffLink, "RING") != NULL) {
             STOP_TIMER1;
             uputs0("ATA\r\n");
-            _delay_ms(1000);
+            custom_delay_ms(1000);
             uputs0("AT+VTS=\"1,4,#,A,6,7,0\"\r\n");
             cleanBuffer();
             START_TIMER1;
