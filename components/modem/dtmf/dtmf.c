@@ -29,6 +29,7 @@ char * getDtmfCode() {
 void addSymbolToDtmfCode(const char *message) {
 
     if (message[9] == '*') {
+        indexLastSymbolInCode = 0;
         return;
     }
 

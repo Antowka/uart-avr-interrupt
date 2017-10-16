@@ -67,6 +67,7 @@ void sendConfig(void) {
  * Send AT command for check connection and sync speed
  */
 void initModem(void) {
+
     initTimerIrq();
     initUART();
     sendConfig();
@@ -136,10 +137,23 @@ void modemLoop(void) {
         } else if (isDtmf(buffLink)) {
 
             if (isLastDtmf(buffLink)) {
-                if(strcmp(getDtmfCode(), "01") == 0) {
+                if(strcmp(getDtmfCode(), "01") == 0) {  //ON
                     enableRelay();
-                } else if (strcmp(getDtmfCode(), "02") == 0) {
+                    custom_delay_ms(2000);
+                    uputs0("AT+VTS=\"2,2,2\"\r\n");
+                } else if (strcmp(getDtmfCode(), "02") == 0) { //OFF
                     disableRelay();
+                    custom_delay_ms(2000);
+                    uputs0("AT+VTS=\"2,2,2\"\r\n");
+                } else if (strcmp(getDtmfCode(), "03") == 0) { //STATUS
+
+                    if (CHECK_PIN(PINB, 0)) {
+                        custom_delay_ms(2000);
+                        uputs0("AT+VTS=\"2,2\"\r\n");
+                    } else {
+                        custom_delay_ms(2000);
+                        uputs0("AT+VTS=\"2\"\r\n");
+                    }
                 }
 
             } else {
@@ -149,8 +163,6 @@ void modemLoop(void) {
         } else if (strstr(buffLink, "RING") != NULL) {
             STOP_TIMER1;
             uputs0("ATA\r\n");
-            custom_delay_ms(1000);
-            uputs0("AT+VTS=\"1,4,#,A,6,7,0\"\r\n");
             cleanBuffer();
             START_TIMER1;
         } else if (strstr(buffLink, "OK") != NULL) {

@@ -13,6 +13,10 @@
 //  Example for PD2: PIN_OFF(PORTD, 2)
 #define PIN_OFF(port,pin) ((port) &= ~(1 << (pin)))
 
+// Set pull up on pin
+//
+//
+#define PIN_PULL_UP(ddr, port, pin) (ddr) &= ~(1<<(pin)); (port) |=(1<<(pin));
 
 //  Sets pin of port to value
 //
