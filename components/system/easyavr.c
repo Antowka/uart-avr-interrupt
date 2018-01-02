@@ -28,8 +28,9 @@ void initEasyAvr(void) {
 
 
     PIN_AS_OUTPUT(DDRB, LED_PIN);
-    PIN_AS_OUTPUT(DDRB, PINB0);
-    PIN_ON(PORTB, PINB0);
+    PIN_AS_OUTPUT(DDRB, PWR_KEY_PIN);
+    PIN_AS_OUTPUT(DDRD, RELAY_PIN);
+    PIN_ON(PORTD, RELAY_PIN);
 }
 
 /**

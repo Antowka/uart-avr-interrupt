@@ -2,7 +2,10 @@
 #define _mydefs_h_
 
 #define PING_AT_COUNTER 6
-#define LED_PIN 5
+#define LED_PIN 0
+#define PWR_KEY_PIN 2
+#define RELAY_PIN 3
+
 
 
 //Easier type writing:

@@ -4,18 +4,21 @@ SET(CMAKE_SYSTEM_NAME Generic)
 #============================================================================================
 PROJECT(blink)
 
-SET(DEVICE "atmega328p")
+SET(DEVICE atmega328p)
 SET(FREQ "14745600")
 
 #============================================================================================
 
+include_directories(/usr/avr/sys-root/include)
+
+
 SET(CMAKE_C_COMPILER avr-gcc)
 SET(CMAKE_CXX_COMPILER avr-g++)
 
-SET(CMAKE_C_FLAGS "-Os -mmcu=${DEVICE} -DF_CPU=${FREQ}UL -std=gnu99 -Wl,--gc-sections")
+SET(CMAKE_C_FLAGS "-Os -mmcu=${DEVICE} -DF_CPU=${FREQ}UL -std=c11 -Wl,--gc-sections")
 SET(CMAKE_CXX_FLAGS "-Os -mmcu=${DEVICE} -DF_CPU=${FREQ}UL -Wl,--gc-sections")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 #============================================================================================
 
@@ -25,7 +28,9 @@ SET(SOURCE_FILES
         components/uart/uart.h components/modem/sms/sms.c
         components/modem/sms/sms.h components/modem/modem.c
         components/modem/modem.h components/system/easyavr.c
-        components/modem/gprs/gprs.c components/modem/gprs/gprs.h components/modem/dtmf/dtmf.h components/modem/dtmf/dtmf.c)
+        components/modem/gprs/gprs.c components/modem/gprs/gprs.h
+        components/modem/dtmf/dtmf.h components/modem/dtmf/dtmf.c)
+
 #============================================================================================
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCE_FILES})

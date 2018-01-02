@@ -7,7 +7,7 @@
 
 
 #define BAUD     9600
-#define LOCAL_CPU    16000000
+#define LOCAL_CPU    14745600
 
 
 #define UBRR_VALUE (((LOCAL_CPU/(BAUD*16UL)))-1)

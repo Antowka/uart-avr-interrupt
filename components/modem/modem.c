@@ -29,17 +29,17 @@ void initTimerIrq(void) {
 }
 
 void onOffModem(void) {
-    PIN_ON(PORTB, 1);
+    PIN_ON(PORTB, PWR_KEY_PIN);
     custom_delay_ms(1500);
-    PIN_OFF(PORTB, 1);
+    PIN_OFF(PORTB, PWR_KEY_PIN);
 }
 
 void enableRelay(void) {
-    PIN_OFF(PORTB, 0);
+    PIN_OFF(PORTB, RELAY_PIN);
 }
 
 void disableRelay(void) {
-    PIN_ON(PORTB, 0);
+    PIN_ON(PORTB, RELAY_PIN);
 }
 
 /**
@@ -126,6 +126,7 @@ void modemLoop(void) {
     do {
         buffLink[buffPointer++] = ugetchar0();
     } while (ukbhit0());
+    blink();
 
     if (buffPointer) {
 
