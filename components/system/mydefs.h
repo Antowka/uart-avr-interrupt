@@ -5,6 +5,7 @@
 #define LED_PIN 0
 #define PWR_KEY_PIN 2
 #define RELAY_PIN 3
+static char *PHONE_NUMBER = "+79875359969";
 
 
 

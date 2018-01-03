@@ -18,7 +18,7 @@ static char *buffPointer = (char *) &sms_buff;
  * @return
  */
 int isSmsCommand(char *message) {
-    return strstr(message, "SMS:") != NULL;
+    return strstr(message, "CMD:") != NULL;
 }
 
 /**
@@ -29,7 +29,7 @@ int isSmsCommand(char *message) {
  */
 char* cleanSmsText(char *message) {
     sms_buff[0] = '\0';
-    memcpy(buffPointer, &message[(strstr(message, "SMS:")-message+4)], BUFF_SIZE-1);
+    memcpy(buffPointer, &message[(strstr(message, "CMD:")-message+4)], BUFF_SIZE-1);
     buffPointer[BUFF_SIZE-1] = '\0';
     return sms_buff;
 }
@@ -43,7 +43,7 @@ char* cleanSmsText(char *message) {
 void sendSms(char *phone, char *text) {
 
     char phoneCommand[25];
-    char smsText[64];
+    char smsText[sizeof(text)+1];
 
     uputs0("AT+CSCS=\"GSM\"\r\n");
 
@@ -55,7 +55,7 @@ void sendSms(char *phone, char *text) {
     uputs0(phoneCommand);
 
     custom_delay_ms(1000);
-    sprintf(smsText, "%s\032", text);
+    sprintf(smsText, "%s%c", text, '\032');
     uputs0(smsText);
 }
 

@@ -3,7 +3,7 @@
 //
 #include <util/delay.h>
 #include <string.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include "../system/mydefs.h"
 #include "../uart/uart.h"
 #include "sms/sms.h"
@@ -30,16 +30,24 @@ void initTimerIrq(void) {
 
 void onOffModem(void) {
     PIN_ON(PORTB, PWR_KEY_PIN);
-    custom_delay_ms(1500);
+    custom_delay_ms(2500);
     PIN_OFF(PORTB, PWR_KEY_PIN);
 }
 
 void enableRelay(void) {
-    PIN_OFF(PORTB, RELAY_PIN);
+    PIN_OFF(PORTD, RELAY_PIN);
 }
 
 void disableRelay(void) {
-    PIN_ON(PORTB, RELAY_PIN);
+    PIN_ON(PORTD, RELAY_PIN);
+}
+
+int isEnabledRelay(void) {
+    return CHECK_PIN(PINB, 0);
+}
+
+int checkDtmfCode(char *code) {
+    return strcmp(getDtmfCode(), code) == 0;
 }
 
 /**
@@ -94,9 +102,21 @@ void pingModem(void) {
 void smsProcessor(char *message) {
 
     char *smsCommand = cleanSmsText(message);
+    PIN_ON(PORTB, LED_PIN);
 
-    if (strstr(smsCommand, "ping")) {
-        sendSms("+79875359969", "pong");
+    if (strstr(smsCommand, "ON")) {
+
+        enableRelay();
+        sendSms(PHONE_NUMBER, isEnabledRelay() ? "OK" : "FAIL");
+
+    } else if (strstr(smsCommand, "OFF")) {
+
+        disableRelay();
+        sendSms(PHONE_NUMBER, isEnabledRelay() ? "FAIL" : "OK");
+
+    } else if (strstr(smsCommand, "STATUS")) {
+
+        sendSms(PHONE_NUMBER, isEnabledRelay() ? "ON" : "OFF");
     }
 }
 
@@ -122,11 +142,9 @@ void modemLoop(void) {
         return;
     }
 
-
     do {
         buffLink[buffPointer++] = ugetchar0();
     } while (ukbhit0());
-    blink();
 
     if (buffPointer) {
 
@@ -138,17 +156,21 @@ void modemLoop(void) {
         } else if (isDtmf(buffLink)) {
 
             if (isLastDtmf(buffLink)) {
-                if(strcmp(getDtmfCode(), "01") == 0) {  //ON
+                if (checkDtmfCode("01")) {  //ON
+
                     enableRelay();
                     custom_delay_ms(2000);
                     uputs0("AT+VTS=\"2,2,2\"\r\n");
-                } else if (strcmp(getDtmfCode(), "02") == 0) { //OFF
+
+                } else if (checkDtmfCode("02")) { //OFF
+
                     disableRelay();
                     custom_delay_ms(2000);
                     uputs0("AT+VTS=\"2,2,2\"\r\n");
-                } else if (strcmp(getDtmfCode(), "03") == 0) { //STATUS
 
-                    if (CHECK_PIN(PINB, 0)) {
+                } else if (checkDtmfCode("03")) { //STATUS
+
+                    if (isEnabledRelay()) {
                         custom_delay_ms(2000);
                         uputs0("AT+VTS=\"2,2\"\r\n");
                     } else {

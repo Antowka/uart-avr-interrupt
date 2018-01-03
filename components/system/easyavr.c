@@ -15,7 +15,6 @@ void initEasyAvr(void) {
     PIN_PULL_UP(DDRB, PORTB, PINB5);
 
     PIN_PULL_UP(DDRD, PORTD, PIND2);
-    PIN_PULL_UP(DDRD, PORTD, PIND3);
     PIN_PULL_UP(DDRD, PORTD, PIND4);
     PIN_PULL_UP(DDRD, PORTD, PIND5);
     PIN_PULL_UP(DDRD, PORTD, PIND6);
@@ -26,11 +25,13 @@ void initEasyAvr(void) {
     PIN_PULL_UP(DDRC, PORTC, PINC2);
     PIN_PULL_UP(DDRC, PORTC, PINC3);
 
-
     PIN_AS_OUTPUT(DDRB, LED_PIN);
-    PIN_AS_OUTPUT(DDRB, PWR_KEY_PIN);
+
     PIN_AS_OUTPUT(DDRD, RELAY_PIN);
     PIN_ON(PORTD, RELAY_PIN);
+
+    PIN_AS_OUTPUT(DDRB, PWR_KEY_PIN);
+    PIN_OFF(PORTB, PWR_KEY_PIN);
 }
 
 /**
@@ -49,4 +50,9 @@ void custom_delay_ms(int delayTimeout) {
         _delay_ms(1);
         wdt_reset();
     }
+}
+
+void wdt_init(void) {
+    MCUSR = 0;
+    wdt_enable(WDTO_8S);
 }
