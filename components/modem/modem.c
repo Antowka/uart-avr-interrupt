@@ -43,7 +43,7 @@ void disableRelay(void) {
 }
 
 int isEnabledRelay(void) {
-    return CHECK_PIN(PINB, 0);
+    return !CHECK_PIN(PIND, RELAY_PIN);
 }
 
 int checkDtmfCode(char *code) {
@@ -172,10 +172,10 @@ void modemLoop(void) {
 
                     if (isEnabledRelay()) {
                         custom_delay_ms(2000);
-                        uputs0("AT+VTS=\"2,2\"\r\n");
+                        uputs0("AT+VTS=\"2\"\r\n");
                     } else {
                         custom_delay_ms(2000);
-                        uputs0("AT+VTS=\"2\"\r\n");
+                        uputs0("AT+VTS=\"2,2\"\r\n");
                     }
                 }
 
